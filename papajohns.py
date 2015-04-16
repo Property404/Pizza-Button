@@ -1,6 +1,6 @@
 from splinter import Browser
 import time
-
+import sys
 
 
 # User Detail Class
@@ -37,21 +37,32 @@ class UserDetail:
         text+="<email>"+self.email+"</email>\n"
         return text
 def order(detail,use_card=False):
+    sys.stdout.write("Started papajohns.order\r")
+    sys.stdout.flush()
     # Get phone info
     area_code=detail.phone_number[0:3]
     phone_prefix=detail.phone_number[3:6]
     phone_suffix=detail.phone_number[6:len(detail.phone_number)]
 
     # Order Pizza
+    sys.stdout.write("Starting splinter          \r")
+    sys.stdout.flush()
     with Browser() as browser:
         # Find pizza and check out
+	sys.stdout.write("Visiting Papa Johns          \r")
+	sys.stdout.flush()
         url="http://order.papajohns.com/index.html?site=WEB"
         browser.visit(url)
+	sys.stdout.write("Filling out basic info          \r")
+	sys.stdout.flush()
         browser.fill('geoAddress.address1',detail.address)
         browser.fill('geoAddress.zipCode',detail.zip)
         browser.find_by_id('setLocationSubmit').click()
         browser.find_by_name('addBtn')[1].click()
         browser.find_by_id('readyToCheckoutBtn').click()
+
+	sys.stdout.write("Heading to checkout          \r")
+	sys.stdout.flush()
         browser.visit("https://order.papajohns.com/secure/checkout.html")
 
         #Make Cheese
@@ -79,5 +90,6 @@ def order(detail,use_card=False):
         #Confirm Age over 13
         browser.find_by_id('minAgeConfirmation-img').click()
 
+	sys.stdout.write("Finalizing order        \r")
         #Place Order
         #browser.find_by_id('placeOrderBtn').click()
