@@ -15,6 +15,7 @@ class UserDetail:
     cc_type=None
     cc_exp=None
     cc_sec=None
+    twitter=None
 
     def __init__(self,filename):
         file=open(filename,"r").read()
@@ -24,8 +25,10 @@ class UserDetail:
         self.zip=file[file.index("<zip>")+5:file.index("</zip>")]
         self.phone_number=file[file.index("<phone_number>")+14:file.index("</phone_number>")]
         self.email=file[file.index("<email>")+7:file.index("</email>")]
+        self.twitter=file[file.index("<twitter>")+9:file.index("</twitter>")]
     def export(self):
         text=""
+        text+="<twitter>"+self.twitter+"</twitter>\n"
         text+="<first_name>"+self.first_name+"</first_name>\n"
         text+="<last_name>"+self.last_name+"</last_name>\n"
         text+="<address>"+self.address+"</address>\n"
@@ -66,8 +69,7 @@ def order(detail,use_card=False):
         #Fill in Email
         browser.fill('customer.email',detail.email)
         browser.fill('customer.confirmationEmail',detail.email)
-        time.sleep(100)
-        exit()
+
         #Select Payment Type
         if use_card:
             browser.find_by_id('').click()
