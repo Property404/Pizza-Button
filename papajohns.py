@@ -165,6 +165,6 @@ def order(detail,use_card= True):
         browser.find_by_id('minAgeConfirmation-img').click()
 	output("Placing order")
         #Place Order
-        #browser.find_by_id('placeOrderBtn').click()
+        browser.find_by_id('placeOrderBtn').click()
         time.sleep(10)
 	output("Order placed")

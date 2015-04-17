@@ -57,7 +57,11 @@ while True:
 				# Check activation status
 				if checkActivation():
 					# Start ordering pizza
-					get_pizza.order_pizza(USER_DETAIL_FILE,use_card=False)
+					try:
+						get_pizza.order_pizza(USER_DETAIL_FILE,use_card=False)
+					except Exception as e:
+						print(e.args)
+						print "Failed to order pizza :("
 				else:
 					print("Attempting to activate")
 					try:
