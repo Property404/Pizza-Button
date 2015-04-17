@@ -32,6 +32,9 @@ class UserDetail:
         self.cc_expY=file[file.index("<cc_expY>")+9:file.index("</cc_expY>")]
         self.cc_sec=file[file.index("<cc_sec>")+8:file.index("</cc_sec>")]
         self.twitter=file[file.index("<twitter>")+9:file.index("</twitter>")]
+        self.billing_address=file[file.index("<billing_address>")+17:file.index("</billing_address>")]
+        self.billing_zip=file[file.index("<billing_zip>")+13:file.index("</billing_zip>")]
+        self.billing_city=file[file.index("<billing_city>")+14:file.index("</billing_city>")]
 
     def export(self):
         text=""
@@ -41,8 +44,10 @@ class UserDetail:
         text+="<zip>"+self.zipCode+"</zip>\n"
         text+="<phone_number>"+self.phone_number+"</phone_number>\n"
         text+="<email>"+self.email+"</email>\n"
-        text+="<cc_twitter>"+self.twitter+"</cc_twitter>\n"
-
+        text+="<twitter>"+self.twitter+"</twitter>\n"
+        text+="<billing_address>"+self.billing_address+"</billing_address>\n"
+        text+="<billing_zip>"+self.billing_zip+"</billing_zip>\n"
+        text+="<billing_city>"+self.billing_city+"</billing_city>\n"
         #NSA
         text+="<cc_number>"+self.cc_number+"</cc_number>\n"
         text+="<cc_type>"+self.cc_type+"</cc_type>\n"
@@ -51,7 +56,7 @@ class UserDetail:
         text+="<cc_sec>"+self.cc_sec+"</cc_sec>\n"
         return text
 
-def order(detail,use_card= False):
+def order(detail,use_card= True):
     sys.stdout.write
     # Get phone info
     area_code=detail.phone_number[0:3]
@@ -137,6 +142,13 @@ def order(detail,use_card= False):
             browser.fill("paymentSummary.creditCardPayment.nameOnCard", detail.first_name + " " + detail.last_name)
             #fill in CVV
             browser.fill("paymentSummary.creditCardPayment.cvv", detail.cc_sec)
+            browser.find_by_id("differentAddress-img").click()
+            browser.fill("paymentSummary.creditCardPayment.billingAddress.address1", detail.billing_address)
+            browser.fill("paymentSummary.creditCardPayment.billingAddress.city", detail.billing_city)
+            browser.fill("paymentSummary.creditCardPayment.billingAddress.postalCode", detail.billing_zip)
+            browser.fill("paymentSummary.creditCardPayment.billingAddress.phoneNumber.phone1", area_code)
+            browser.fill("paymentSummary.creditCardPayment.billingAddress.phoneNumber.phone2", phone_prefix)
+            browser.fill("paymentSummary.creditCardPayment.billingAddress.phoneNumber.phone3", phone_suffix)
         else:
             browser.find_by_id('paymentCash-img').click()
 
@@ -144,5 +156,5 @@ def order(detail,use_card= False):
         browser.find_by_id('minAgeConfirmation-img').click()
 
         #Place Order
-        browser.find_by_id('placeOrderBtn').click()
+        #browser.find_by_id('placeOrderBtn').click()
         time.sleep(10)
