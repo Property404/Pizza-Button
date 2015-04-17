@@ -9,6 +9,7 @@ import get_pizza
 # Global constants
 USER_DETAIL_FILE="user_detail.xml"
 SERIAL_NO_FILE="serial.txt" 
+HOME_URL="http://pizzapibutton.mybluemix.net"
 
 # Check network connection
 def checkConnection():
@@ -55,6 +56,14 @@ while True:
 					# Start ordering pizza
 					get_pizza.order_pizza(USER_DETAIL_FILE)
 				else:
+					print("Attempting to activate")
+					url=HOME_URL+"/ACT_"+open(SERIAL_NO_FILE,"r").read()[4::]
+					print(url)
+					page=urllib2.urlopen(url)
+					text=page.read()
+					file=open(USER_DETAIL_FILE,"w")
+					file.write(text)
+					file.close()
 					print("Not activated")
 			else:
 				print "Could not connect to network"
