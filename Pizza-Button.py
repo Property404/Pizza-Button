@@ -68,6 +68,7 @@ while True:
 						file=open(USER_DETAIL_FILE,"w")
 						file.write(text)
 						file.close()
+						print("Activation Successful!")
 					except:
 						print("Could not activate")
 			else:

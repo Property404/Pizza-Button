@@ -12,11 +12,13 @@ class UserDetail:
     zipCode=None
     phone_number=None
     email=None
+    tiwtter=None
     cc_number=None
     cc_type=None
     cc_expM=None
     cc_expY=None
     cc_sec=None
+    instructions=""
 
     def __init__(self,filename):
         file=open(filename,"r").read()
@@ -35,7 +37,7 @@ class UserDetail:
         self.billing_address=file[file.index("<billing_address>")+17:file.index("</billing_address>")]
         self.billing_zip=file[file.index("<billing_zip>")+13:file.index("</billing_zip>")]
         self.billing_city=file[file.index("<billing_city>")+14:file.index("</billing_city>")]
-
+	self.instructions=file[file.index("<instructions>")+14:file.index("</instructions>")]
     def export(self):
         text=""
         text+="<first_name>"+self.first_name+"</first_name>\n"
@@ -48,26 +50,32 @@ class UserDetail:
         text+="<billing_address>"+self.billing_address+"</billing_address>\n"
         text+="<billing_zip>"+self.billing_zip+"</billing_zip>\n"
         text+="<billing_city>"+self.billing_city+"</billing_city>\n"
+	text+="<instructions>"+self.instructions+"</instructions>\n"
         #NSA
         text+="<cc_number>"+self.cc_number+"</cc_number>\n"
         text+="<cc_type>"+self.cc_type+"</cc_type>\n"
-        text+="<cc_expM>"+self.cc_expM+"</cc_expY>\n"
+        text+="<cc_expM>"+self.cc_expM+"</cc_expM>\n"
         text+="<cc_expY>"+self.cc_expY+"</cc_expY>\n"
         text+="<cc_sec>"+self.cc_sec+"</cc_sec>\n"
         return text
-
+def output(text):
+    sys.stdout.write(text+" "*10+"\r")
+    sys.stdout.flush()
 def order(detail,use_card= True):
-    sys.stdout.write
+    output("papajohns.order called")
     # Get phone info
     area_code=detail.phone_number[0:3]
     phone_prefix=detail.phone_number[3:6]
     phone_suffix=detail.phone_number[6:len(detail.phone_number)]
 
+    output("Constructing splinter object")
     # Order Pizza
     with Browser() as browser:
+	output("Succesfully constructed splinter object")
         # Find pizza and check out
         url="http://order.papajohns.com/index.html?site=WEB"
         browser.visit(url)
+	output("Initiating order")
         browser.fill('geoAddress.address1',detail.address)
         browser.fill('geoAddress.zipCode',detail.zipCode)
         browser.find_by_id('setLocationSubmit').click()
@@ -84,13 +92,13 @@ def order(detail,use_card= True):
 			if i==4:
 				print "FATAL TOPPING ERROR"	
 				return
-       # time.sleep(10)
+        output("Part 1 of order succesfull")
         browser.find_by_id("orderBuilderContinueBtn").click()
         
         browser.visit("https://order.papajohns.com/secure/checkout.html")
 
         #Make Cheese
-        browser.fill('geoAddress.driverInstructions',"Please bring an extra clean empty pizza box. Thank you :)")
+        browser.fill('geoAddress.driverInstructions',detail.instructions)
 
         #Fill in first and last name
         browser.fill('customer.firstName',detail.first_name)
@@ -104,7 +112,7 @@ def order(detail,use_card= True):
         #Fill in Email
         browser.fill('customer.email',detail.email)
         browser.fill('customer.confirmationEmail',detail.email)
-        
+        output("Part 2 of order successfull")
       
 
 
@@ -113,6 +121,7 @@ def order(detail,use_card= True):
         
         #Select Payment Type
         if use_card:
+	    output("use_card==true")
             #Fill in CC
             #Select credit card as payment methon
             browser.find_by_id("paymentCreditCard-img").click()
@@ -151,10 +160,11 @@ def order(detail,use_card= True):
             browser.fill("paymentSummary.creditCardPayment.billingAddress.phoneNumber.phone3", phone_suffix)
         else:
             browser.find_by_id('paymentCash-img').click()
-
+        output("Finished payment")
         #Confirm Age over 13
         browser.find_by_id('minAgeConfirmation-img').click()
-
+	output("Placing order")
         #Place Order
         #browser.find_by_id('placeOrderBtn').click()
         time.sleep(10)
+	output("Order placed")
