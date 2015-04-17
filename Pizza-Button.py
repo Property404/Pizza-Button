@@ -7,7 +7,7 @@ import urllib2
 import get_pizza
 
 # Global constants
-USER_DETAIL_FILE="user_detail.xml"
+USER_DETAIL_FILE="/home/pi/Pizza-Button/user_detail.xml"
 SERIAL_NO_FILE="serial.txt" 
 HOME_URL="http://pizzapibutton.mybluemix.net"
 
@@ -49,6 +49,9 @@ while True:
 		if (cpress==False):
 			# Button confirmed pressed
 			print("\nButton Pressed!")
+			file=open("bla.log","w")
+			file.write("this is log")
+			file.close()
 			last_pressed=time.time()
 			if checkConnection():
 				# Check activation status
