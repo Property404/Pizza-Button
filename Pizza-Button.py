@@ -54,17 +54,19 @@ while True:
 				# Check activation status
 				if checkActivation():
 					# Start ordering pizza
-					get_pizza.order_pizza(USER_DETAIL_FILE)
+					get_pizza.order_pizza(USER_DETAIL_FILE,use_card=False)
 				else:
 					print("Attempting to activate")
-					url=HOME_URL+"/ACT_"+open(SERIAL_NO_FILE,"r").read()[4::]
-					print(url)
-					page=urllib2.urlopen(url)
-					text=page.read()
-					file=open(USER_DETAIL_FILE,"w")
-					file.write(text)
-					file.close()
-					print("Not activated")
+					try:
+						url=HOME_URL+"/ACT_"+open(SERIAL_NO_FILE,"r").read()[4::]
+						print(url)
+						page=urllib2.urlopen(url)
+						text=page.read()
+						file=open(USER_DETAIL_FILE,"w")
+						file.write(text)
+						file.close()
+					except:
+						print("Could not activate")
 			else:
 				print "Could not connect to network"
 		cpress=True

@@ -69,14 +69,23 @@ def order(detail,use_card= False):
         browser.find_by_name('addBtn')[1].click()
         browser.find_by_id('readyToCheckoutBtn').click()
         browser.visit("http://order.papajohns.com/build/edit/1/0.html")
-        browser.find_by_id("topping_35-img").click()
+	for i in range(5):
+        	if browser.is_element_present_by_id("topping_35-img",5):
+			browser.find_by_id("topping_35-img").click()
+			time.sleep(1)
+			break
+		else:
+			print "TOPPING ERROR"
+			if i==4:
+				print "FATAL TOPPING ERROR"	
+				return
        # time.sleep(10)
         browser.find_by_id("orderBuilderContinueBtn").click()
         
         browser.visit("https://order.papajohns.com/secure/checkout.html")
 
         #Make Cheese
-        #browser.fill('geoAddress.driverInstructions',"PLEASE DO NOT SEND PEPPORONI. CHEESE DID NOT WORK. I AM MUSLIM.")
+        browser.fill('geoAddress.driverInstructions',"Please bring an extra clean empty pizza box. Thank you :)")
 
         #Fill in first and last name
         browser.fill('customer.firstName',detail.first_name)
@@ -135,5 +144,5 @@ def order(detail,use_card= False):
         browser.find_by_id('minAgeConfirmation-img').click()
 
         #Place Order
-        #browser.find_by_id('placeOrderBtn').click()
+        browser.find_by_id('placeOrderBtn').click()
         time.sleep(10)
